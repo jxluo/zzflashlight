@@ -1,5 +1,7 @@
 package me.jxluo.zzflashlight;
 
+import android.app.Activity;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -8,24 +10,52 @@ import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ToggleButton;
 
 
-public class MainActivity extends ActionBarActivity implements SurfaceHolder.Callback {
+public class MainActivity extends Activity implements SurfaceHolder.Callback {
 
     ToggleButton mToggleButton;
     Camera mCamera;
     SurfaceView mySurfaceView;
     SurfaceHolder mHolder;
 
+    boolean myBulbOn = false;
+    ImageView myImageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mToggleButton = (ToggleButton)findViewById(R.id.toggleButton);
+        getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+
+
+        //mToggleButton = (ToggleButton)findViewById(R.id.toggleButton);
         mySurfaceView = (SurfaceView)findViewById(R.id.surfaceView);
         mHolder = mySurfaceView.getHolder();
         mHolder.addCallback(this);
+
+        myImageView = (ImageView) findViewById(R.id.imageView);
+        refreshImage();
+        myImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("Image is click!");
+                myBulbOn = !myBulbOn;
+                refreshImage();
+                refreshBulb();
+
+            }
+        });
+    }
+
+    private void refreshImage() {
+        if (myBulbOn) {
+            myImageView.setAlpha(255);
+        } else {
+            myImageView.setAlpha(100);
+        }
     }
 
     @Override
@@ -41,10 +71,10 @@ public class MainActivity extends ActionBarActivity implements SurfaceHolder.Cal
         super.onStop();
     }
 
-    public void onClick(View view) {
-        System.out.println("On status click " + String.valueOf(mToggleButton.isChecked()));
+    public void refreshBulb() {
+        //System.out.println("On status click " + String.valueOf(mToggleButton.isChecked()));
 
-        Boolean isChecked = mToggleButton.isChecked();
+        Boolean isChecked = myBulbOn;
 
         if (isChecked) {
             try {
