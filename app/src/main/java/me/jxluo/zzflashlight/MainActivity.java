@@ -12,6 +12,9 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ToggleButton;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.*;
 
 
 public class MainActivity extends Activity implements SurfaceHolder.Callback {
@@ -23,6 +26,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
 
     boolean myBulbOn = false;
     ImageView myImageView;
+
+    private InterstitialAd interstitial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
         myImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //displayInterstitial();
                 System.out.println("Image is click!");
                 myBulbOn = !myBulbOn;
                 refreshImage();
@@ -48,6 +54,31 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
 
             }
         });
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+
+        // Create the interstitial.
+        interstitial = new InterstitialAd(this);
+        interstitial.setAdUnitId("ca-app-pub-5592155429252855/2152274929");
+
+        // Create ad request.
+        AdRequest adRequest1 = new AdRequest.Builder().build();
+
+        // Begin loading your interstitial.
+        interstitial.loadAd(adRequest1);
+
+
+    }
+
+    public void displayInterstitial() {
+        System.out.println("jxluodebug displayInteresrserserse");
+        if (interstitial.isLoaded()) {
+            System.out.println("jxluodebug add loaded");
+            interstitial.show();
+        }
     }
 
     private void refreshImage() {
@@ -62,12 +93,15 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
     protected void onStart() {
         super.onStart();
         mCamera = Camera.open();
+        displayInterstitial();
     }
 
     @Override
     protected void onStop() {
+
         mCamera.release();
         mCamera = null;
+        displayInterstitial();
         super.onStop();
     }
 
